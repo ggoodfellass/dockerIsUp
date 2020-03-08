@@ -1,0 +1,38 @@
+version: '3'
+services:
+  client:
+    image: node:10
+    restart: always
+    working_dir: /usr/src/client
+    volumes:
+      - ./frontend:/usr/src/client
+    entrypoint: ["yarn", "start"]
+    ports:
+      - '3000:3000'
+    links:
+      - api
+    networks:
+      - webappnetwork
+  api:
+    image: node:10
+    restart: always
+    working_dir: /usr/src/api
+    volumes:
+      - ./backend:/usr/src/api
+    entrypoint: ["yarn", "start"]
+    ports:
+      - '5000:5000'
+    links:
+      - mongo
+    networks:
+      - webappnetwork
+  mongo:
+    image: mongo
+    volumes:
+      - ./data:/data/db
+    networks:
+      - webappnetwork
+
+networks:
+  webappnetwork:
+    driver: bridge
